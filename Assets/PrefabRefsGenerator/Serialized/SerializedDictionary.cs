@@ -48,5 +48,4 @@ namespace PrefabRefsGenerator.Utilities
 			m_values.Clear();
 		}
 	}
-
 }

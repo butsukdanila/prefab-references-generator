@@ -6,7 +6,7 @@ using UnityEngine;
 namespace PrefabRefsGenerator.Utilities
 {
 	[Serializable]
-	public class SerializedType : ISerializationCallbackReceiver
+	public sealed class SerializedType : ISerializationCallbackReceiver
 	{
 		[SerializeField] private string m_assemblyQualifiedName;
 

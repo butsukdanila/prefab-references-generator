@@ -1,5 +1,3 @@
-
-using System;
 using System.Collections.Generic;
 
 using UnityEditor;
@@ -43,7 +41,7 @@ namespace PrefabRefsGenerator
 			//var stage = PrefabStageUtility.GetPrefabStage(obj);
 			//if (stage == null) return;
 
-			//// todo: search from selected prefabs
+			// todo: search from selected prefabs
 			//var selectPath = PrefabUtility.GetPrefabAssetPathOfNearestInstanceRoot(m_prefab); 
 			//if (!string.Equals(stage.assetPath, selectPath)) return;
 
@@ -57,7 +55,7 @@ namespace PrefabRefsGenerator
 			//	excluded = m_otherPrefabs
 			//});
 
-			//// todo: SHA-256
+			//todo: SHA- 256
 			//var selected g.GenerateSHA256();
 		}
 
@@ -74,11 +72,6 @@ namespace PrefabRefsGenerator
 			//};
 
 			//rootVisualElement.SetEnabled(true);
-		}
-
-		private bool IsEqual(ReadOnlySpan<byte> lhs, ReadOnlySpan<byte> rhs)
-		{
-			return lhs.SequenceEqual(rhs);
 		}
 
 		public void Generate()

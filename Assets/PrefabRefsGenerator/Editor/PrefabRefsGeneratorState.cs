@@ -12,12 +12,11 @@ using UnityEngine.UIElements;
 namespace PrefabRefsGenerator
 {
 	[FilePath("Assets/Editor/PrefabRefsGeneratorState.asset", FilePathAttribute.Location.ProjectFolder)]
-	public class PrefabRefsGeneratorState : FixedScriptableSingleton<PrefabRefsGeneratorState>
+	public class PrefabRefsGeneratorState : Utilities.Editor.ScriptableSingleton<PrefabRefsGeneratorState>
 	{
 		[SerializeField] private string m_generationFolder;
+		[SerializeField] private TagToTypeMap m_tagToType;
 		[SerializeField] private List<PrefabRecord> m_records;
-		[SerializeField] private TagToType m_tagToType;
-		[SerializeField] private SerializedType m_type;
 
 		private string m_defaultFolder;
 
@@ -66,9 +65,9 @@ namespace PrefabRefsGenerator
 
 		public void CreateGUI(VisualElement parent)
 		{
-			var container = parent.Add<VisualElement>();
-			CreateFolderSelector(container);
-			CreateRecordsGUI(container);
+			CreateFolderSelector(parent);
+			CreateTagToTypeMap(parent);
+			CreateRecords(parent);
 		}
 
 		private void CreateFolderSelector(VisualElement parent)
@@ -76,7 +75,6 @@ namespace PrefabRefsGenerator
 			var container = parent.Add<VisualElement>();
 
 			var generationFolder = serializedObject.FindProperty(nameof(m_generationFolder));
-
 			var fs = container.Add<FolderSelector>();
 			fs.defaultFolder = m_defaultFolder;
 			fs.label.text = generationFolder.displayName;
@@ -84,22 +82,34 @@ namespace PrefabRefsGenerator
 			fs.textField.TrackPropertyValue(generationFolder, _ => Save());
 		}
 
-		private void CreateRecordsGUI(VisualElement parent)
+		private void CreateTagToTypeMap(VisualElement parent)
+		{
+			var container = parent.Add<VisualElement>();
+
+			var pf = container.Add<PropertyField>();
+			pf.BindProperty(serializedObject.FindProperty(nameof(m_tagToType)));
+			pf.Bind(serializedObject);
+		}
+
+		private void CreateRecords(VisualElement parent)
 		{
 			var container = parent.Add<VisualElement>();
 			container.style.WithMargin(1, 5, 5, 1);
 
+			var records = serializedObject.FindProperty(nameof(m_records));
 			var lv = container.Add<ListView>();
-
+			lv.headerTitle = records.displayName;
+			lv.showFoldoutHeader = true;
+			lv.showBoundCollectionSize = false;
 			lv.showBorder = true;
 			lv.showAddRemoveFooter = true;
 
 			lv.itemsSource = m_records;
 			lv.makeItem = new(() => { return new PrefabRecord.Visual(); });
 			lv.bindItem = new((e, i) => (e as PrefabRecord.Visual).record = m_records[i]);
-
 			lv.itemsAdded += _ => Save();
 			lv.itemsRemoved += _ => Save();
+			lv.fixedItemHeight = 20;
 		}
 	}
 
@@ -114,28 +124,31 @@ namespace PrefabRefsGenerator
 
 		public sealed class Visual : VisualElement
 		{
-			public readonly ObjectField prefab = new();
-			public readonly ObjectField refs = new();
+			private readonly ObjectField m_prefab = new();
+			private readonly ObjectField m_refs = new();
 
 			public PrefabRecord record { get; set; }
 
 			public Visual()
 			{
-				Add(prefab);
-				Add(refs);
+				Add(m_prefab);
+				Add(m_refs);
 
 				style.flexDirection = FlexDirection.Row;
 
-				prefab.style.flexGrow = 1;
-				refs.style.flexGrow = 1;
+				m_prefab.style.flexGrow = 1;
+				m_refs.style.flexGrow = 1;
 
-				refs.SetEnabled(false);
+				m_refs.SetEnabled(false);
+
+				m_prefab.objectType = typeof(GameObject);
+				m_prefab.allowSceneObjects = false;
 			}
 		}
 	}
 
 	[Serializable]
-	public sealed class TagToType : SerializedDictionary<string, SerializedType> { }
+	public sealed class TagToTypeMap : SerializedDictionary<string, SerializedType> { }
 
 	public static class VisualElementEx
 	{

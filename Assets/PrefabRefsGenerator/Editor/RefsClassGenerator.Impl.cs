@@ -1,6 +1,8 @@
 
 using System.Text;
 
+using PrefabRefsGenerator.Utilities.Editor;
+
 using UnityEngine;
 
 namespace PrefabRefsGenerator

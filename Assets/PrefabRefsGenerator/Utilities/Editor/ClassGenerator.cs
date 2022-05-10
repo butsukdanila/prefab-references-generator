@@ -3,7 +3,7 @@ using System.IO;
 using System.Linq;
 using System.Text;
 
-namespace PrefabRefsGenerator
+namespace PrefabRefsGenerator.Utilities.Editor
 {
 	public abstract class ClassGenerator
 	{

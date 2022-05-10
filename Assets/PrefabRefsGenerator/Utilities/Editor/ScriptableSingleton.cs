@@ -9,10 +9,10 @@ using UnityEngine;
 
 using Object = UnityEngine.Object;
 
-namespace PrefabRefsGenerator
+namespace PrefabRefsGenerator.Utilities.Editor
 {
-	public abstract class FixedScriptableSingleton<T> : ScriptableObject
-		where T : FixedScriptableSingleton<T>
+	public abstract class ScriptableSingleton<T> : ScriptableObject
+		where T : ScriptableSingleton<T>
 	{
 		private static T s_instance;
 		private SerializedObject m_serialized;

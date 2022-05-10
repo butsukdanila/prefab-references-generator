@@ -13,7 +13,7 @@ namespace PrefabRefsGenerator
 #if UNITY_EDITOR
 		protected virtual void OnValidate()
 		{
-			refs = refs == null ? gameObject.RequireComponent<TRefs>() : refs;
+			if (refs == null) refs = gameObject.RequireComponent<TRefs>();
 		}
 #endif
 	}
